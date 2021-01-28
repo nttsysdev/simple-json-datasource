@@ -20,6 +20,8 @@ export class GenericDatasource {
     var query = this.buildQueryParameters(options);
     query.targets = query.targets.filter(t => !t.hide);
 
+    query.variables = this.getVariables();
+
     if (query.targets.length <= 0) {
       return this.q.when({data: []});
     }
@@ -35,6 +37,17 @@ export class GenericDatasource {
       data: query,
       method: 'POST'
     });
+  }
+
+  getVariables() {
+    var vars = {};
+    if (!this.templateSrv || !this.templateSrv.variables) return vars;
+
+    for (var key in this.templateSrv.variables) {
+      var item = this.templateSrv.variables[key];
+      vars[item.name] = item.current;
+    }
+    return vars;
   }
 
   testDatasource() {

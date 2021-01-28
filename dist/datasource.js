@@ -40,6 +40,8 @@ var GenericDatasource = exports.GenericDatasource = function () {
         return !t.hide;
       });
 
+      query.variables = this.getVariables();
+
       if (query.targets.length <= 0) {
         return this.q.when({ data: [] });
       }
@@ -55,6 +57,18 @@ var GenericDatasource = exports.GenericDatasource = function () {
         data: query,
         method: 'POST'
       });
+    }
+  }, {
+    key: 'getVariables',
+    value: function getVariables() {
+      var vars = {};
+      if (!this.templateSrv || !this.templateSrv.variables) return vars;
+
+      for (var key in this.templateSrv.variables) {
+        var item = this.templateSrv.variables[key];
+        vars[item.name] = item.current;
+      }
+      return vars;
     }
   }, {
     key: 'testDatasource',
